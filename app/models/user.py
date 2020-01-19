@@ -5,7 +5,7 @@ def getUser(args):
     db = Database()
     query = 'SELECT * FROM "USER_INFO" WHERE "LOGIN_ID" = %s AND "LOGIN_PW" = %s'
     param = [args.get('loginId'), args.get('password')]
-    result = db.excuteQuery(query, param)
+    result = db.excuteReadQuery(query, param)
 
     returndata = {'errorcode': 1, 'msg': 'invalid ID or Password'}
     if result:
@@ -23,14 +23,11 @@ def getUser(args):
 
 
 def registUser(args):
-    print('TEST!!')
-    print(type(args))
-    print(args.get('loginId'))
     db = Database()
 
     query = 'SELECT * FROM "USER_INFO" WHERE "LOGIN_ID" = %s'
     param = [args.get('loginId')]
-    result = db.excuteQuery(query, param)
+    result = db.excuteReadQuery(query, param)
 
     if result:
         db.closeConnection()
@@ -38,10 +35,10 @@ def registUser(args):
                 'msg': args.get('loginId') + ' already exist user.'
                }
 
-    query = 'INSERT INTO public."USER_INFO"("EMAIL", "LOGIN_ID", "NAME", "USER_ID", "LOGIN_PW")VALUES (%s, %s, %s, (SELECT \'USER\'||SUBSTRING(COALESCE(MAX("USER_ID"), \'USER000000\'), 5, 6)::INTEGER + 1 FROM public."USER_INFO")::TEXT, %s);'
-    param = [args.get('email'), args.get('loginId'), args.get('name'), args.get('password')]
-    db.excuteQuery(query, param)
-
+    query = 'INSERT INTO public."USER_INFO"("EMAIL", "LOGIN_ID", "NAME", "USER_ID", "LOGIN_PW", "DEL_YN", "INS_USER_ID", "INS_DTM")VALUES (%s, %s, %s, (SELECT \'USER\'||SUBSTRING(COALESCE(MAX("USER_ID"), \'USER000000\'), 5, 6)::INTEGER + 1 FROM public."USER_INFO")::TEXT, %s, %s, %s, current_timestamp);'
+    param = [args.get('email'), args.get('loginId'), args.get('name'), args.get('password'), "N", "ADMIN"]
+    db.excuteWriteQuery(query, param)
+    db.conn.commit()
     db.closeConnection()
     return {'errorcode': 0,
             'msg': 'Successfully registered.'

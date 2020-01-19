@@ -13,9 +13,11 @@ class Database:
             self.conn = psycopg2.connect(connectionInfo)
             self.cur = self.conn.cursor()
 
-    def excuteQuery(self, query, param):
-        print(query)
-        print(type(query))
+    def excuteWriteQuery(self, query, param):
+        self.cur.execute(query, param)
+        return True
+
+    def excuteReadQuery(self, query, param):
         self.cur.execute(query, param)
         return self.cur.fetchall()
 
