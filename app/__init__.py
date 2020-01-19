@@ -1,34 +1,34 @@
 from flask import Flask
 from flask import jsonify, request
+from app.models.database import *
 import psycopg2
 
 app = Flask(__name__)
 
+
 @app.route('/')
 def index():
-    return "hello ljs93kr!!"
+    return "hello world"
 
 
 @app.route('/data')
 def data():
-    data = {"names": ["John", "Jacob", "Julie", "Jennifer"]}
-    print(type(data))
-    return jsonify(data)
+    returnValue = {"names": ["John", "Jacob", "Julie", "Jennifer"]}
+    return jsonify(returnValue)
 
 
 @app.route('/login', methods=['GET'])
 def login():
-    connectionInfo = "host='rollingpin-db.caduakykgikn.ap-northeast-2.rds.amazonaws.com' dbname='postgres' user='rollingpin' password='rollingpin'"
-    connection = psycopg2.connect(connectionInfo)
-    cur = connection.cursor()
+    args = request.args
 
-    loginId = request.args.get('loginId')
-    password = str(request.args.get('password'))
-    cur.execute('SELECT * FROM "USER_INFO" WHERE "LOGIN_ID" = %s AND "LOGIN_PW" = %s', [loginId, password])
-    result = cur.fetchall()
-    returndata = {'result': 'no data'}
-    if(result):
-        returndata = {'result': 'OK','userId': result[0][1], 'password': result[0][4], 'email': result[0][0], 'userNm': result[0][2]}
+    db = Database()
+    query = 'SELECT * FROM "USER_INFO" WHERE "LOGIN_ID" = %s AND "LOGIN_PW" = %s'
+    param = [args.get('loginId'), args.get('password')]
+    result = db.excuteQuery(query, param)
+
+    returndata = {'errorcode': 1, 'msg': 'invalid ID or Password'}
+    if result:
+        returndata = {'errorcode': 0, 'msg': 'exist user', 'result': 'OK', 'userId': result[0][1], 'password': result[0][4], 'email': result[0][0], 'userNm': result[0][2]}
 
     return jsonify(returndata)
 
