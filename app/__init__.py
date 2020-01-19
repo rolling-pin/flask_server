@@ -11,5 +11,13 @@ def index():
 @app.route('/data')
 def data():
     data = {"names": ["John", "Jacob", "Julie", "Jennifer"]}
+    print(type(data))
     return jsonify(data)
+
+
+@app.route('/login', methods=['GET'])
+def login():
+    user = request.args.get('userId')
+    returndata = {'userId': user, 'password': '1234!@#$'}
+    return jsonify(returndata)
 
