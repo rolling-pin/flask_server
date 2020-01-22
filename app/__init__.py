@@ -16,7 +16,7 @@ def login():
     return jsonify(returndata)
 
 
-@app.route('/login', methods=['POST'])
+@app.route('/registUser', methods=['POST'])
 def regist():
     returndata = registUser(request.get_json())
     return jsonify(returndata)
