@@ -1,4 +1,5 @@
 import psycopg2
+from psycopg2.extras import RealDictCursor
 
 
 class Database:
@@ -11,7 +12,7 @@ class Database:
             password = "rollingpin"
             connectionInfo = "host= %s dbname= %s user= %s password= %s" % (host, dbname, user, password)
             self.conn = psycopg2.connect(connectionInfo)
-            self.cur = self.conn.cursor()
+            self.cur = self.conn.cursor(cursor_factory=RealDictCursor)
 
     def excuteWriteQuery(self, query, param):
         self.cur.execute(query, param)

@@ -1,6 +1,7 @@
 from flask import Flask
 from flask import jsonify, request
-from app.models.user import *
+import app.models.user as user
+import app.models.category as category
 
 app = Flask(__name__)
 
@@ -11,13 +12,19 @@ def index():
 
 
 @app.route('/login', methods=['GET'])
-def login():
-    returndata = getUser(request.args)
+def getUser():
+    returndata = user.getUser(request.args)
     return jsonify(returndata)
 
 
 @app.route('/registUser', methods=['POST'])
-def regist():
-    returndata = registUser(request.get_json())
+def registUser():
+    returndata = user.registUser(request.get_json())
+    return jsonify(returndata)
+
+
+@app.route('/getTotalFavorite', methods=['GET'])
+def getTotalFavorite():
+    returndata = category.getTotalFavorite(request.args)
     return jsonify(returndata)
 
