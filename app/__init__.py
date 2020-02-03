@@ -26,5 +26,17 @@ def registUser():
 @app.route('/getTotalFavorite', methods=['GET'])
 def getTotalFavorite():
     returndata = category.getTotalFavorite(request.args)
+    return returndata
+
+
+@app.route('/getUserFavorite', methods=['GET'])
+def getUserFavorite():
+    returndata = category.getUserFavorite(request.args)
+    return returndata
+
+
+@app.route('/registUserFavorite', methods=['POST'])
+def registUserFavorite():
+    returndata = category.registUserFavorite(request.get_json())
     return jsonify(returndata)
 
